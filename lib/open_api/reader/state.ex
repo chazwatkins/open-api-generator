@@ -180,6 +180,13 @@ defmodule OpenAPI.Reader.State do
     {%__MODULE__{state | schema_specs_by_path: schema_specs_by_path}, target_ref}
   end
 
+  def with_schema_ref(state, yaml, decoder) when is_list(yaml) do
+    # Handle case where yaml is a list instead of a map
+    # Take the first item in the list as a fallback
+    first_item = List.first(yaml)
+    with_schema_ref(state, first_item, decoder)
+  end
+
   def with_schema_ref(state, yaml, decoder) do
     {state, schema} = decoder.(state, yaml)
 
